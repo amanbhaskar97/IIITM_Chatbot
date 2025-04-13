@@ -10,6 +10,12 @@ const ChatContainer = ({ user, token, logout }) => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
+  // System message that defines the AI's personality
+  const systemContext = {
+    role: 'system',
+    content: "You are EmonerY, a friendly AI assistant. Provide short, accurate, and concise answers - typically 1-3 sentences. Be warm but direct. Avoid unnecessary explanations or excessive enthusiasm."
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -27,16 +33,13 @@ const ChatContainer = ({ user, token, logout }) => {
       content: input
     };
 
+    // Add user message to the conversation
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsTyping(true);
 
-    const systemContext = {
-      role: 'system',
-      content: "You are EmonerY, a friendly and empathetic chatbot inspired by ELIZA. You should respond in a way that shows genuine interest in the user's feelings and experiences, often reflecting their statements back to them or asking probing questions. Keep your responses concise and focused on understanding the user's emotional state. Always maintain a supportive and non-judgmental tone."
-    };
-
     try {
+      // Send the entire message history for context
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/chat`, {
         method: 'POST',
         headers: {
@@ -44,7 +47,8 @@ const ChatContainer = ({ user, token, logout }) => {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          messages: [systemContext, ...messages, userMessage]
+          messages: [systemContext, ...messages, userMessage],
+          userId: user.id // Send user ID to backend
         })
       });
 
@@ -64,6 +68,8 @@ const ChatContainer = ({ user, token, logout }) => {
         role: 'assistant',
         content: data.content
       };
+      
+      // Add assistant response to the conversation
       setMessages(prev => [...prev, assistantMessage]);
 
     } catch (error) {
@@ -75,6 +81,34 @@ const ChatContainer = ({ user, token, logout }) => {
       }]);
     }
   };
+
+  // Load previous conversation from localStorage on component mount
+  // Using user.id to create a unique storage key for each user
+  useEffect(() => {
+    if (user && user.id) {
+      const storageKey = `chatMessages_${user.id}`;
+      const savedMessages = localStorage.getItem(storageKey);
+      if (savedMessages) {
+        try {
+          setMessages(JSON.parse(savedMessages));
+        } catch (e) {
+          console.error('Failed to load saved messages', e);
+        }
+      } else {
+        // Clear messages if no history for this user
+        setMessages([]);
+      }
+    }
+  }, [user]);
+
+  // Save conversation to localStorage whenever messages change
+  // Using user.id to create a unique storage key for each user
+  useEffect(() => {
+    if (user && user.id && messages.length > 0) {
+      const storageKey = `chatMessages_${user.id}`;
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+    }
+  }, [messages, user]);
 
   return (
     <>
