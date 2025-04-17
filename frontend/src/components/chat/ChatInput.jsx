@@ -1,23 +1,29 @@
 import React from 'react';
+import { Send } from 'lucide-react';
 
-const ChatInput = ({ input, setInput, handleSubmit }) => {
+const ChatInput = ({ input, setInput, handleSubmit, isTyping }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex gap-2 items-center border border-border rounded-lg p-2 bg-accent"
+      className="flex items-center gap-2 max-w-4xl mx-auto w-full"
     >
       <input
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Type your message..."
-        className="flex-1 px-3 py-2 bg-transparent outline-none"
+        disabled={isTyping}
+        className="flex-1 py-2.5 px-4 rounded-full outline-none focus:ring-2 focus:ring-blue-400 border border-border text-foreground placeholder:text-muted-foreground bg-background"
       />
       <button
         type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        disabled={isTyping || !input.trim()}
+        className={`p-2.5 rounded-full bg-blue-600 text-white ${
+          isTyping || !input.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+        } transition-colors`}
+        aria-label="Send message"
       >
-        Send
+        <Send size={20} />
       </button>
     </form>
   );

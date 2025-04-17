@@ -5,6 +5,8 @@ import VerifyEmailForm from './VerifyEmailForm';
 import ForgotPasswordForm from './ForgotPasswordForm';
 import ResetPasswordForm from './ResetPasswordForm';
 import AlertMessage from '../common/AlertMessage';
+// Import your logo
+import logo from '../../assets/images/iiitm-logo.png';
 
 const AuthContainer = ({ setToken, setUser, setIsAuthenticated }) => {
   const [authView, setAuthView] = useState('login');
@@ -36,14 +38,17 @@ const AuthContainer = ({ setToken, setUser, setIsAuthenticated }) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-4">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Welcome to EmonerY Chat</h1>
-        <p className="text-muted-foreground">Please login or register to start chatting</p>
+    <div className="w-full max-w-md mx-auto pt-8">
+      <div className="text-center mb-6">
+        <div className="flex justify-center mb-4">
+          <img src={logo} alt="IIITM Logo" className="h-16 w-auto" />
+        </div>
+        <h1 className="text-2xl font-bold text-foreground">IIITM Virtual Assist</h1>
+        <p className="text-muted-foreground text-sm mt-1">Your personal academic assistant</p>
       </div>
 
-      <div className="border rounded-xl bg-background shadow-lg p-6">
-        <h2 className="text-xl font-semibold text-center mb-4 capitalize">
+      <div className="bg-background rounded-xl shadow-lg p-6 border border-border">
+        <h2 className="text-lg font-medium text-center mb-4 text-foreground capitalize">
           {authView.replace('-', ' ')}
         </h2>
         <AlertMessage error={error} message={message} />

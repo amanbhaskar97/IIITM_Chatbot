@@ -10,12 +10,10 @@ const ChatContainer = ({ user, token, logout }) => {
   const [isError, setIsError] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Visual-only chat history - not sent to backend for context
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Scroll whenever messages change
   React.useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
@@ -38,7 +36,7 @@ const ChatContainer = ({ user, token, logout }) => {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          message: input.trim(), // Only send current message, no history
+          message: input.trim(),
           userId: user.id
         })
       });
@@ -66,46 +64,34 @@ const ChatContainer = ({ user, token, logout }) => {
     }
   };
 
-  const clearChat = () => {
-    setMessages([]);
-  };
-
-  // Therapeutic UI elements
-  const therapyThemes = {
-    header: "Chat with Emory",
-    placeholder: "Tell me what's on your mind...",
-    startingHint: "How are you feeling today?"
-  };
-
   return (
-    <div className="flex flex-col h-full bg-blue-50 rounded-lg shadow-md">
-      <ChatHeader 
-        title={therapyThemes.header}
-        user={user} 
-        logout={logout} 
-        onClearChat={clearChat} 
-      />
-      <div className="flex-1 p-4 overflow-auto">
-        {messages.length === 0 && (
-          <div className="text-center text-gray-500 mt-10 italic">
-            {therapyThemes.startingHint}
+    <div className="flex flex-col h-screen max-h-screen bg-background rounded-none sm:rounded-lg shadow-md overflow-hidden">
+      <ChatHeader user={user} logout={logout} />
+      <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
+          {messages.length === 0 && (
+            <div className="flex items-center justify-center h-full p-4">
+              <div className="text-center text-muted-foreground max-w-sm p-6 bg-accent/30 rounded-lg">
+                <p>Ask me anything about IIITM. I'm here to help!</p>
+              </div>
+            </div>
+          )}
+          <div className="px-3 py-4 md:px-6">
+            <MessageList 
+              messages={messages} 
+              isTyping={isTyping} 
+              messagesEndRef={messagesEndRef} 
+            />
           </div>
-        )}
-        <MessageList 
-          messages={messages} 
-          isTyping={isTyping} 
-          isError={isError}
-          messagesEndRef={messagesEndRef} 
-        />
-      </div>
-      <div className="p-4 border-t border-gray-200">
-        <ChatInput 
-          input={input} 
-          setInput={setInput} 
-          handleSubmit={handleSubmit} 
-          isTyping={isTyping}
-          placeholder={therapyThemes.placeholder}
-        />
+        </div>
+        <div className="p-3 border-t border-border bg-background/80 backdrop-blur-sm">
+          <ChatInput 
+            input={input} 
+            setInput={setInput} 
+            handleSubmit={handleSubmit} 
+            isTyping={isTyping}
+          />
+        </div>
       </div>
     </div>
   );

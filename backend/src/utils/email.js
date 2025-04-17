@@ -20,9 +20,9 @@ const sendVerificationEmail = async (email, otp) => {
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,
     to: email,
-    subject: 'EmonerY Chat - Email Verification',
+    subject: 'IIITM Assistant Chat - Email Verification',
     html: `
-      <h2>Welcome to EmonerY Chat!</h2>
+      <h2>Welcome to IIITM Assist Chat!</h2>
       <p>Your verification code is: <strong>${otp}</strong></p>
       <p>This code will expire in 1 hour.</p>
     `
@@ -35,7 +35,7 @@ const sendPasswordResetEmail = async (email, otp) => {
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,
     to: email,
-    subject: 'EmonerY Chat - Password Reset',
+    subject: 'IIITM Assist Chat - Password Reset',
     html: `
       <h2>Password Reset Request</h2>
       <p>Your password reset code is: <strong>${otp}</strong></p>

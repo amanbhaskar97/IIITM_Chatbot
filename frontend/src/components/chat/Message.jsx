@@ -4,13 +4,15 @@ const Message = ({ message }) => {
   const isUser = message.role === 'user';
 
   return (
-    <div className={`my-2 flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-[70%] px-4 py-2 rounded-xl text-sm shadow-md ${
-          isUser ? 'bg-blue-600 text-white' : 'bg-accent text-foreground'
+        className={`px-4 py-3 max-w-[85%] md:max-w-[75%] rounded-2xl shadow-sm ${
+          isUser 
+            ? 'bg-blue-600 text-white rounded-tr-none' 
+            : 'bg-accent text-foreground rounded-tl-none'
         }`}
       >
-        {message.content}
+        <p className="text-sm md:text-base whitespace-pre-wrap leading-relaxed">{message.content}</p>
       </div>
     </div>
   );
